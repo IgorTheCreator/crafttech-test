@@ -7,6 +7,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon",
+    "migrate": "npx prisma migrate dev --name initial",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,6 +22,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@prisma/client": "^5.15.0",
     "express": "^4.19.2"
   }
 }
