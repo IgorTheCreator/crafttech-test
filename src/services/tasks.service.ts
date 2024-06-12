@@ -5,8 +5,8 @@ interface ITaskService {
   createTask(task: UserInputTask): Promise<Task>
   getAllTasks(): Promise<Task[]>
   getTaskById(taskId: string): Promise<Task | null>
-  updateTask(taskId: string, task: UserInputTask): Promise<Task>
-  deleteTask(taskId: string): Promise<void>
+  updateTask(taskId: string, task: UserInputTask): Promise<Task | null>
+  deleteTask(taskId: string): Promise<Task | null>
 }
 
 export class TaskService implements ITaskService {
@@ -30,15 +30,17 @@ export class TaskService implements ITaskService {
     return task
   }
 
-  async updateTask(taskId: string, task: UserInputTask): Promise<Task> {
+  async updateTask(taskId: string, task: UserInputTask): Promise<Task | null> {
     const updatedTask = await this.repository.updateTask(taskId, task)
 
     return updatedTask
   }
 
-  async deleteTask(taskId: string): Promise<void> {
-    await this.repository.deleteTask(taskId)
+  async deleteTask(taskId: string): Promise<Task | null> {
+    const deletedTask = await this.repository.deleteTask(taskId)
+
+    return deletedTask
   }
 }
 
-const taskService = new TaskService(taskRepository)
+export const taskService = new TaskService(taskRepository)
