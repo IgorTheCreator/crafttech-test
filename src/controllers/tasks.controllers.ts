@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { TaskService } from '../services'
+import { TaskService, taskService } from '../services'
 import createHttpError from 'http-errors'
 
 type ControllerFunction = (
@@ -98,3 +98,5 @@ class TaskController implements ITaskController {
     }
   }
 }
+
+export const taskContoller = new TaskController(taskService)
