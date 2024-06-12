@@ -9,7 +9,7 @@ interface ITaskRepository {
   deleteTask(taskId: string): Promise<void>
 }
 
-class TaskRepository implements ITaskRepository {
+export class TaskRepository implements ITaskRepository {
   constructor(private readonly db: PrismaClient) {}
 
   async createTask(task: UserInputTask): Promise<Task> {
