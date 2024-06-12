@@ -1,1 +1,1 @@
-export * from './tasks.controllers'
+export * from './tasks.controller'
