@@ -11,8 +11,9 @@ export function bodyValidation(
     // Проверка валидности тела запроса
     const parseResult = UserInputTaskSchema.safeParse(req.body)
     if (!parseResult.success) {
-      throw createHttpError[400]()
+      throw createHttpError[400](parseResult.error.message)
     }
+    req.body = parseResult.data
     next()
   } catch (err) {
     next(err)
