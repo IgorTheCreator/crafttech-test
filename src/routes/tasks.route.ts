@@ -1,38 +1,50 @@
 import { Router } from 'express'
-import { taskContoller } from '../controllers'
+import { TaskController, taskController } from '../controllers'
 import { bodyValidation } from '../middlewares/body-validation.middleware'
 import { paramValidation } from '../middlewares'
 
-export const taskRouter = Router()
+export class TaskRouter {
+  taskRouter = Router()
+  constructor(private readonly taskController: TaskController) {
+    this.init()
+  }
 
-// POST /tasks: создать новую задачу
-taskRouter.post(
-  '/',
-  bodyValidation,
-  taskContoller.createTask.bind(taskContoller)
-)
+  init() {
+    // POST /tasks: создать новую задачу
+    this.taskRouter.post(
+      '/',
+      bodyValidation,
+      this.taskController.createTask.bind(taskController)
+    )
 
-// GET /tasks: получить список всех задач
-taskRouter.get('/', taskContoller.getAllTasks.bind(taskContoller))
+    // GET /tasks: получить список всех задач
+    this.taskRouter.get(
+      '/',
+      this.taskController.getAllTasks.bind(taskController)
+    )
 
-// GET /tasks/:id: получить задачу по ID
-taskRouter.get(
-  '/:taskId',
-  paramValidation,
-  taskContoller.getTaskById.bind(taskContoller)
-)
+    // GET /tasks/:id: получить задачу по ID
+    this.taskRouter.get(
+      '/:taskId',
+      paramValidation,
+      this.taskController.getTaskById.bind(taskController)
+    )
 
-// PUT /tasks/:id: обновить задачу по ID
-taskRouter.put(
-  '/:taskId',
-  paramValidation,
-  bodyValidation,
-  taskContoller.updateTask.bind(taskContoller)
-)
+    // PUT /tasks/:id: обновить задачу по ID
+    this.taskRouter.put(
+      '/:taskId',
+      paramValidation,
+      bodyValidation,
+      this.taskController.updateTask.bind(taskController)
+    )
 
-// DELETE /tasks/:id: удалить задачу по ID
-taskRouter.delete(
-  '/:taskId',
-  paramValidation,
-  taskContoller.deleteTask.bind(taskContoller)
-)
+    // DELETE /tasks/:id: удалить задачу по ID
+    this.taskRouter.delete(
+      '/:taskId',
+      paramValidation,
+      this.taskController.deleteTask.bind(taskController)
+    )
+  }
+}
+
+export const taskRouter = new TaskRouter(taskController).taskRouter
