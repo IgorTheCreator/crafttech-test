@@ -16,7 +16,7 @@ interface ITaskController {
   deleteTask: ControllerFunction
 }
 
-class TaskController implements ITaskController {
+export class TaskController implements ITaskController {
   constructor(private readonly service: TaskService) {}
 
   async createTask(
@@ -98,4 +98,4 @@ class TaskController implements ITaskController {
     }
   }
 }
-export const taskContoller = new TaskController(taskService)
+export const taskController = new TaskController(taskService)
