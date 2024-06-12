@@ -1,12 +1,12 @@
 import { Task, UserInputTask } from '../types'
-import { PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 
 interface ITaskRepository {
   createTask(task: UserInputTask): Promise<Task>
   getAllTasks(): Promise<Task[]>
   getTaskById(taskId: string): Promise<Task | null>
-  updateTask(taskId: string, task: UserInputTask): Promise<Task>
-  deleteTask(taskId: string): Promise<void>
+  updateTask(taskId: string, task: UserInputTask): Promise<Task | null>
+  deleteTask(taskId: string): Promise<Task | null>
 }
 
 export class TaskRepository implements ITaskRepository {
@@ -38,25 +38,46 @@ export class TaskRepository implements ITaskRepository {
     return task
   }
 
-  async updateTask(taskId: string, task: UserInputTask): Promise<Task> {
-    const updatedTask = await this.db.task.update({
-      data: {
-        ...task,
-      },
-      where: {
-        id: taskId,
-      },
-    })
+  async updateTask(taskId: string, task: UserInputTask): Promise<Task | null> {
+    try {
+      const updatedTask = await this.db.task.update({
+        data: {
+          ...task,
+        },
+        where: {
+          id: taskId,
+        },
+      })
 
-    return updatedTask
+      return updatedTask
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        return null
+      }
+      throw err
+    }
   }
 
-  async deleteTask(taskId: string): Promise<void> {
-    await this.db.task.delete({
-      where: {
-        id: taskId,
-      },
-    })
+  async deleteTask(taskId: string): Promise<Task | null> {
+    try {
+      const deletedTask = await this.db.task.delete({
+        where: {
+          id: taskId,
+        },
+      })
+      return deletedTask
+    } catch (err) {
+      if (
+        err instanceof Prisma.PrismaClientKnownRequestError &&
+        err.code === 'P2025'
+      ) {
+        return null
+      }
+      throw err
+    }
   }
 }
 
